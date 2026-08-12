@@ -37,15 +37,16 @@ export const songs: Song[] = [
     backgroundImage: "/images/shaam-e-gajal.png",
     durationLabel: "6:15",
   },
+
   {
     id: "2",
-    title: "Tum Itna Jo Muskura Rahe Ho",
+    title: "Kal Chaudhvin Ki Raat Thi",
     singer: "Jagjit Singh",
-    album: "Arth",
-    audioUrl: `${CLOUDINARY_BASE}tum_itna_jo_jagjit_spw7wi.mp3`,
-    artworkUrl: 'https://c.saavncdn.com/341/Tum-Itna-Jo-Muskura-Rahe-Ho-Hindi-2024-20240427063427-500x500.jpg',
+    album: "Mirza Ghalib",
+    audioUrl: `${CLOUDINARY_BASE}kal_chaudhvin_ki_raat_thi_u6dkq7.mp3`,
+    artworkUrl: 'https://c.saavncdn.com/226/Kal-Chaudhvin-Ki-Raat-Thi-Hitesh-Prasad-Hindi-2020-20200309105850-500x500.jpg',
     backgroundImage: "/images/shaam-e-gajal.png",
-    durationLabel: "5:23",
+    durationLabel: "5:45",
   },
   {
     id: "3",
@@ -278,6 +279,16 @@ export const songs: Song[] = [
     artworkUrl: 'https://i.ytimg.com/vi/ghoKJCMcw7I/maxresdefault.jpg',
     backgroundImage: "/images/shaam-e-gajal.png",
     durationLabel: "4:58",
+  },
+  {
+    id: "26",
+    title: "Tum Itna Jo Muskura Rahe Ho",
+    singer: "Jagjit Singh",
+    album: "Arth",
+    audioUrl: `${CLOUDINARY_BASE}tum_itna_jo_jagjit_spw7wi.mp3`,
+    artworkUrl: 'https://c.saavncdn.com/341/Tum-Itna-Jo-Muskura-Rahe-Ho-Hindi-2024-20240427063427-500x500.jpg',
+    backgroundImage: "/images/shaam-e-gajal.png",
+    durationLabel: "5:23",
   },
 ]
 
