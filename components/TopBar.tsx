@@ -52,7 +52,7 @@ export default function TopBar({ currentSong }: TopBarProps) {
               self-center
             "
           >
-            <div className="flex items-center">
+            <div className="flex items-center justify-end px-4">
               <LiveClock />
             </div>
           </div>

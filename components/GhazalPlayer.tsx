@@ -274,13 +274,10 @@ export default function GhazalPlayer({
       >
         {/* 1. Large Circular Artwork on Left */}
         <div className="relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-inner ring-2 ring-white/20">
-          <Image
+          <img
             src={currentSong.artworkUrl}
             alt={`${currentSong.title} artwork`}
-            fill
-            className="object-cover"
-            sizes="64px"
-            priority
+            className="object-cover w-full h-full"
           />
         </div>
 
