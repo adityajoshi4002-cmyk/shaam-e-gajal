@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  --color-amber: #f5a623;
+  --color-burnt-orange: #c84b0e;
+  --color-deep-brown: #2d1208;
+  --color-charcoal: #1a1008;
+  --color-off-white: #f5ede0;
+
+  --font-inter: "Inter", system-ui, sans-serif;
+  --font-devanagari: "Noto Serif Devanagari", serif;
+}
+
+/* ─── Reset & base ──────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: #0e0602;
+  color: #f5ede0;
+}
+
+/* Prevent iOS bounce scroll */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────── */
+h1 {
+  font-family: "Noto Serif Devanagari", serif;
+}
+
+/* ─── Smooth scrollbar hiding ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Progress bar cursor ────────────────────────────────────────────────── */
+[role="slider"] {
+  cursor: pointer;
+  touch-action: none;
+}
+
+/* ─── Button resets ──────────────────────────────────────────────────────── */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 2px solid rgba(255, 200, 140, 0.6);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Link resets ────────────────────────────────────────────────────────── */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ─── Subtle grain texture overlay ──────────────────────────────────────── */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.022;
+  background-size: 180px 180px;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 600ms ease forwards;
+}
+
+/* ─── Mobile safe area ───────────────────────────────────────────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
