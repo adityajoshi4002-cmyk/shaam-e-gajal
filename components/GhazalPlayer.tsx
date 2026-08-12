@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
 import { Song } from "@/types/song";
 import { songs } from "@/data/songs";
 import SongInfo from "./SongInfo";
@@ -272,12 +271,30 @@ export default function GhazalPlayer({
             "0 12px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2)",
         }}
       >
-        {/* 1. Large Circular Artwork on Left */}
-        <div className="relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden shadow-inner ring-2 ring-white/20">
+        {/* 1. Large Circular Artwork on Left (rotating disc + shining ring) */}
+        <div
+          className={[
+            "relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden",
+            "shadow-inner ring-2 ring-white/20 ghazal-disc",
+            isPlaying ? "playing" : "",
+          ].join(" ")}
+        >
+          {/* Shining ring overlay */}
+          <div
+            className="absolute inset-0 rounded-full ghazal-disc-ring"
+            style={{
+              pointerEvents: "none",
+              borderRadius: "9999px",
+            }}
+          />
+
           <img
             src={currentSong.artworkUrl}
             alt={`${currentSong.title} artwork`}
             className="object-cover w-full h-full"
+            style={{
+              borderRadius: "9999px",
+            }}
           />
         </div>
 
