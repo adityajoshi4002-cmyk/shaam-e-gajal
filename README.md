@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌙 Shaam-e-Ghazal
 
-## Getting Started
+> **A quiet mehfil for timeless Ghazals. 🎶**
 
-First, run the development server:
+Shaam-e-Ghazal is a simple, immersive web experience created to bring the nostalgia of listening to classic Ghazals into a peaceful digital mehfil.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Inspired by the idea behind **Deluxe Saloon**, the project focuses less on being a traditional music streaming platform and more on creating an atmosphere around music.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### ✨ Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 🎵 Curated classic Ghazals
+- 🌌 Cinematic & peaceful background
+- 💿 Rotating song artwork
+- 🎧 Minimal floating music player
+- 🕰️ Live clock & listener count
+- 📤 Share the current Mehfil
+- 🔗 Spotify & YouTube Music links
+- 📱 Fully responsive
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🛠️ Built With
 
-## Learn More
+**Next.js · React · TypeScript · Tailwind CSS · Cloudinary · Vercel**
 
-To learn more about Next.js, take a look at the following resources:
+### 🚀 Live
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+https://shaam-e-gajal.vercel.app/
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 💻 GitHub
 
-## Deploy on Vercel
+https://github.com/adityajoshi4002-cmyk/shaam-e-gajal
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 👨‍💻 Creator
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Aditya Joshi**  
+https://adidev-six.vercel.app/
+
+---
+
+> **Not another music streaming app.  
+> Just a small place to press Play and enjoy a Ghazal. 🌙🎶**
