@@ -162,7 +162,7 @@ export const songs: Song[] = [
     title: "Yeh Dil Diwana",
     singer: "Pankaj Udhas",
     album: "Nayaab",
-    audioUrl: `${CLOUDINARY_BASE}yeh_dil_diwana_pankaj.mp3`,
+    audioUrl: `${CLOUDINARY_BASE}yeh_dil_diwana_pankaj_nzllkf.mp3`,
     artworkUrl: `${ARTWORK_BASE}/artwork-2.png`,
     backgroundImage: "/images/shaam-e-gajal.png",
     durationLabel: "5:40",
