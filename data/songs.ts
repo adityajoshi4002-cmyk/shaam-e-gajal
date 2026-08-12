@@ -21,7 +21,7 @@ export const SPOTIFY_URL =
 export const YT_MUSIC_URL =
   "https://music.youtube.com/playlist?list=YOUR_PLAYLIST_ID";
 
-export const SITE_URL = "https://shaam-e-ghazal.com";
+export const SITE_URL = "https://shaam-e-gajal.vercel.app/";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
