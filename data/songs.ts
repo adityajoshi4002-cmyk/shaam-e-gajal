@@ -29,13 +29,13 @@ export const songs: Song[] = [
 
   {
     id: "1",
-    title: "Koi Fariyaad",
+    title: "Hosh Walon Ko Khabar Kya",
     singer: "Jagjit Singh",
-    album: "Tum Bin",
-    audioUrl: `${CLOUDINARY_BASE}koi_fariyaad_b8ayve.mp3`,
+    album: "Sarfarosh",
+    audioUrl: `${CLOUDINARY_BASE}hosh_walon_ko_jagjit_nvqlkx.mp3`,
     artworkUrl: `${ARTWORK_BASE}/artwork-1.png`,
     backgroundImage: "/images/shaam-e-gajal.png",
-    durationLabel: "5:04",
+    durationLabel: "6:15",
   },
   {
     id: "2",
@@ -49,13 +49,15 @@ export const songs: Song[] = [
   },
   {
     id: "3",
-    title: "Hosh Walon Ko Khabar Kya",
+    title: "Koi Fariyaad",
     singer: "Jagjit Singh",
-    album: "Sarfarosh",
-    audioUrl: `${CLOUDINARY_BASE}hosh_walon_ko_jagjit_nvqlkx.mp3`,
+    album: "Tum Bin",
+    audioUrl: `${CLOUDINARY_BASE}koi_fariyaad_b8ayve.mp3`,
     artworkUrl: `${ARTWORK_BASE}/artwork-1.png`,
     backgroundImage: "/images/shaam-e-gajal.png",
-    durationLabel: "6:15",
+    durationLabel: "5:04",
+    // ----------------
+
   },
   {
     id: "4",
