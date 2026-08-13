@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Song } from "@/types/song";
 import { songs } from "@/data/songs";
-import SongInfo from "./SongInfo";
+import { Song } from "@/types/song";
+import { useCallback, useEffect, useRef, useState } from "react";
 import PlayerControls from "./PlayerControls";
 
 // ─── Time formatting ─────────────────────────────────────────────────────────
@@ -29,73 +28,74 @@ export default function GhazalPlayer({
   onSongChange,
 }: GhazalPlayerProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const handleNextRef = useRef<() => void>(() => { });
+  const handleNextRef = useRef<() => void>(() => {});
   const progressRef = useRef<HTMLDivElement>(null);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [playerVisible, setPlayerVisible] = useState(false);
 
   const currentSong = songs[currentIndex];
 
-  // ─── Player entrance animation ────────────────────────────────────────────
+  // ─── Player entrance ─────────────────────────────────────────────────────
 
   useEffect(() => {
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       setPlayerVisible(true);
-    }, 300);
+    }, 250);
 
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, []);
 
-  // ─── Notify parent of current song ────────────────────────────────────────
+  // ─── Notify parent ────────────────────────────────────────────────────────
 
   useEffect(() => {
     onSongChange(currentSong);
   }, [currentSong, onSongChange]);
 
-  // ─── Setup audio element ──────────────────────────────────────────────────
+  // ─── Audio setup ──────────────────────────────────────────────────────────
 
   useEffect(() => {
     const audio = new Audio();
 
     audio.preload = "metadata";
-
     audioRef.current = audio;
 
-    const onTimeUpdate = () => {
+    const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
     };
 
-    const onDurationChange = () => {
+    const handleDurationChange = () => {
       setDuration(audio.duration || 0);
     };
 
-    const onEnded = () => {
+    const handleEnded = () => {
       handleNextRef.current();
     };
 
-    audio.addEventListener("timeupdate", onTimeUpdate);
-    audio.addEventListener("durationchange", onDurationChange);
-    audio.addEventListener("loadedmetadata", onDurationChange);
-    audio.addEventListener("ended", onEnded);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("durationchange", handleDurationChange);
+    audio.addEventListener("loadedmetadata", handleDurationChange);
+    audio.addEventListener("ended", handleEnded);
 
     return () => {
       audio.pause();
 
-      audio.removeEventListener("timeupdate", onTimeUpdate);
-      audio.removeEventListener("durationchange", onDurationChange);
-      audio.removeEventListener("loadedmetadata", onDurationChange);
-      audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("durationchange", handleDurationChange);
+      audio.removeEventListener(
+        "loadedmetadata",
+        handleDurationChange
+      );
+      audio.removeEventListener("ended", handleEnded);
 
       audioRef.current = null;
     };
   }, []);
 
-  // ─── Load song when currentIndex changes ──────────────────────────────────
+  // ─── Load current song ────────────────────────────────────────────────────
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -114,12 +114,8 @@ export default function GhazalPlayer({
     if (wasPlaying) {
       audio
         .play()
-        .then(() => {
-          setIsPlaying(true);
-        })
-        .catch(() => {
-          setIsPlaying(false);
-        });
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,12 +130,8 @@ export default function GhazalPlayer({
 
     audio
       .play()
-      .then(() => {
-        setIsPlaying(true);
-      })
-      .catch(() => {
-        setIsPlaying(false);
-      });
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false));
   }, []);
 
   // ─── Pause ────────────────────────────────────────────────────────────────
@@ -152,12 +144,7 @@ export default function GhazalPlayer({
   // ─── Change song ──────────────────────────────────────────────────────────
 
   const changeSong = useCallback((newIndex: number) => {
-    setIsTransitioning(true);
-
-    setTimeout(() => {
-      setCurrentIndex(newIndex);
-      setIsTransitioning(false);
-    }, 300);
+    setCurrentIndex(newIndex);
   }, []);
 
   // ─── Next ─────────────────────────────────────────────────────────────────
@@ -166,13 +153,11 @@ export default function GhazalPlayer({
     changeSong((currentIndex + 1) % songs.length);
   }, [currentIndex, changeSong]);
 
-  // Keep the ref in sync so audio's onEnded always gets the latest version
   handleNextRef.current = handleNext;
 
   // ─── Previous ─────────────────────────────────────────────────────────────
 
   const handlePrev = useCallback(() => {
-    // If more than 3 seconds in, restart current song.
     if (currentTime > 3) {
       const audio = audioRef.current;
 
@@ -214,194 +199,347 @@ export default function GhazalPlayer({
       );
 
       audio.currentTime = ratio * duration;
-
       setCurrentTime(audio.currentTime);
     },
     [duration]
   );
 
-  // ─── Derived ──────────────────────────────────────────────────────────────
+  // ─── Keyboard seek ───────────────────────────────────────────────────────
+
+  const handleSeekKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const audio = audioRef.current;
+
+      if (!audio || !duration) return;
+
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+
+        audio.currentTime = Math.min(
+          duration,
+          audio.currentTime + 5
+        );
+
+        setCurrentTime(audio.currentTime);
+      }
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+
+        audio.currentTime = Math.max(
+          0,
+          audio.currentTime - 5
+        );
+
+        setCurrentTime(audio.currentTime);
+      }
+    },
+    [duration]
+  );
 
   const progress =
     duration > 0
       ? Math.min(currentTime / duration, 1)
       : 0;
 
-  // ─── Render ───────────────────────────────────────────────────────────────
-
   return (
-    <div
-      className="
-        relative
-        w-full
-        flex
-        justify-center
-      "
-      style={{
-        opacity: playerVisible ? 1 : 0,
-        transform: playerVisible
-          ? "translateY(0)"
-          : "translateY(24px)",
-        transition:
-          "opacity 700ms ease, transform 700ms ease",
-      }}
-    >
+    <>
       <div
-        className="
-          w-full
-          max-w-[780px]
-          rounded-full
-          px-3
-          py-2.5
-          sm:px-4
-          sm:py-3
-          flex
-          items-center
-          gap-3
-          sm:gap-4
-          shadow-2xl
-        "
+        className="relative w-full px-4 sm:px-6"
         style={{
-          background:
-            "linear-gradient(90deg, rgba(82, 38, 28, 0.92) 0%, rgba(138, 48, 32, 0.92) 45%, rgba(186, 58, 38, 0.92) 100%)",
-          backdropFilter: "blur(20px) saturate(160%)",
-          WebkitBackdropFilter: "blur(20px) saturate(160%)",
-          border: "1.5 solid rgba(255, 255, 255, 0.15)",
-          boxShadow:
-            "0 12px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.2)",
+          opacity: playerVisible ? 1 : 0,
+          transform: playerVisible
+            ? "translateY(0)"
+            : "translateY(20px)",
+          transition:
+            "opacity 600ms ease, transform 600ms ease",
         }}
       >
-        {/* 1. Large Circular Artwork on Left (rotating disc + shining ring) */}
+        {/* =====================================================
+            GLASS PLAYER
+        ====================================================== */}
+
         <div
-          className={[
-            "relative shrink-0 w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden",
-            "shadow-inner ring-2 ring-white/20 ghazal-disc",
-            isPlaying ? "playing" : "",
-          ].join(" ")}
+          className="
+            mx-auto
+            flex
+            w-full
+            max-w-[780px]
+            items-center
+            gap-4
+            rounded-full
+            border
+            border-white/20
+            px-3
+            py-3
+            sm:gap-5
+            sm:px-4
+            sm:py-3.5
+          "
+          style={{
+            background:
+              "linear-gradient(110deg, rgba(105,55,45,0.48) 0%, rgba(155,75,55,0.42) 48%, rgba(190,88,62,0.45) 100%)",
+            backdropFilter:
+              "blur(28px) saturate(165%)",
+            WebkitBackdropFilter:
+              "blur(28px) saturate(165%)",
+            boxShadow:
+              "0 18px 60px rgba(0,0,0,0.38), 0 1px 0 rgba(255,255,255,0.18) inset, 0 -1px 0 rgba(255,255,255,0.05) inset",
+          }}
         >
-          {/* Shining ring overlay */}
+          {/* =================================================
+              ARTWORK
+          ================================================== */}
+
           <div
-            className="absolute inset-0 rounded-full ghazal-disc-ring"
-            style={{
-              pointerEvents: "none",
-              borderRadius: "9999px",
-            }}
-          />
-
-          <img
-            src={currentSong.artworkUrl}
-            alt={`${currentSong.title} artwork`}
-            className="object-cover w-full h-full"
-            style={{
-              borderRadius: "9999px",
-            }}
-          />
-        </div>
-
-        {/* 2. Middle Column: Title + Progress Bar + Time */}
-        <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
-          {/* Song Title */}
-          <p
-            className="text-white font-semibold text-sm sm:text-base leading-snug truncate"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {currentSong.title}
-          </p>
-
-          {/* Progress Bar */}
-          <div
-            ref={progressRef}
-            role="slider"
-            aria-label="Seek"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(progress * 100)}
-            tabIndex={0}
             className="
-              group
               relative
-              h-1
-              w-full
-              cursor-pointer
-              touch-none
+              h-[68px]
+              w-[68px]
+              shrink-0
+              overflow-hidden
               rounded-full
+              border
+              border-white/25
+              shadow-[0_8px_24px_rgba(0,0,0,0.35)]
+              sm:h-[78px]
+              sm:w-[78px]
             "
-            style={{
-              background: "rgba(255, 255, 255, 0.25)",
-            }}
-            onClick={handleSeek}
-            onTouchStart={handleSeek}
-            onKeyDown={(e) => {
-              const audio = audioRef.current;
-              if (!audio || !duration) return;
-              if (e.key === "ArrowRight") {
-                audio.currentTime = Math.min(duration, audio.currentTime + 5);
-              }
-              if (e.key === "ArrowLeft") {
-                audio.currentTime = Math.max(0, audio.currentTime - 5);
-              }
-            }}
           >
-            {/* Filled progress line */}
-            <div
-              className="
-                absolute
-                left-0
-                top-0
-                h-full
-                rounded-full
-                bg-white/85
-                transition-[width]
-                duration-100
-              "
+            <img
+              src={currentSong.artworkUrl}
+              alt={`${currentSong.title} artwork`}
+              className="h-full w-full rounded-full object-cover"
               style={{
-                width: `${progress * 100}%`,
+                animation: isPlaying
+                  ? "ghazal-artwork-spin 12s linear infinite"
+                  : "none",
               }}
             />
 
-            {/* Seek thumb dot */}
             <div
               className="
+                pointer-events-none
                 absolute
+                left-1/2
                 top-1/2
-                h-2.5
-                w-2.5
+                h-1.5
+                w-1.5
+                -translate-x-1/2
                 -translate-y-1/2
                 rounded-full
-                bg-white
-                shadow-md
-                opacity-0
-                transition-opacity
-                duration-150
-                group-hover:opacity-100
-                group-focus:opacity-100
+                bg-white/90
+                shadow-[0_0_5px_rgba(0,0,0,0.5)]
               "
-              style={{
-                left: `calc(${progress * 100}% - 5px)`,
-              }}
             />
           </div>
 
-          {/* Time display: 0:01 / 3:04 format */}
-          <span
-            className="tabular-nums text-white/70 text-[11px] sm:text-xs font-normal"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {fmtTime(currentTime)} / {duration > 0 ? fmtTime(duration) : currentSong.durationLabel ?? "—"}
-          </span>
-        </div>
+          {/* =================================================
+              SONG CONTENT
+          ================================================== */}
 
-        {/* 3. Right Column: Controls Cluster (Previous | Play/Pause | Next) */}
-        <div className="shrink-0 pl-1">
-          <PlayerControls
-            isPlaying={isPlaying}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
+          <div
+            className="
+              min-w-0
+              flex-1
+              py-1
+              sm:py-1.5
+            "
+          >
+            {/* Song title */}
+
+            <p
+              className="
+                truncate
+                text-[15px]
+                font-semibold
+                leading-tight
+                text-white
+                sm:text-[17px]
+              "
+              style={{
+                fontFamily: "var(--font-inter)",
+                textShadow:
+                  "0 2px 12px rgba(0,0,0,0.25)",
+              }}
+            >
+              {currentSong.title}
+            </p>
+
+            {/* Singer */}
+
+            <p
+              className="
+                mt-3
+                truncate
+                text-[11px]
+                leading-tight
+                text-white/65
+                sm:text-[12px]
+              "
+              style={{
+                fontFamily: "var(--font-inter)",
+                paddingBottom:"4px"
+              }}
+            >
+              {currentSong.singer}
+            </p>
+
+            {/* =================================================
+                PROGRESS + TIME
+            ================================================== */}
+
+            <div className="mt-3 sm:mt-3.5 py-5">
+              <div
+                ref={progressRef}
+                role="slider"
+                aria-label="Seek"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(
+                  progress * 100
+                )}
+                tabIndex={0}
+                className="
+                  group
+                  relative
+                  h-[4px]
+                  w-full
+                  
+                  cursor-pointer
+                  touch-none
+                  rounded-full
+                  bg-white/20
+                  sm:h-[5px]
+                "
+                onClick={handleSeek}
+                onTouchStart={handleSeek}
+                onKeyDown={handleSeekKeyDown}
+              >
+                {/* Progress */}
+
+                <div
+                  className="
+                    absolute
+                    left-0
+                    top-0
+                    h-full
+                    rounded-full
+                    bg-white/70
+                    shadow-[0_0_8px_rgba(255,255,255,0.15)]
+                    transition-[width]
+                    duration-100
+                  "
+                  style={{
+                    width: `${progress * 100}%`,
+                  }}
+                />
+
+                {/* Thumb */}
+
+                <div
+                  className="
+                    absolute
+                    top-1/2
+                    h-2
+                    w-2
+                    -translate-y-1/2
+                    rounded-full
+                    bg-white
+                    opacity-0
+                    shadow-[0_0_8px_rgba(255,255,255,0.5)]
+                    transition-opacity
+                    duration-150
+                    group-hover:opacity-100
+                    group-focus:opacity-100
+                  "
+                  style={{
+                    left: `calc(${progress * 100}% - 4px)`,
+                  }}
+                />
+              </div>
+
+              {/* More breathing room between progress and time */}
+
+              <div
+                className="
+                  mt-2
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+                <span
+                  className="
+                    text-[9px]
+                    tabular-nums
+                    tracking-wide
+                    text-white/55
+                    sm:text-[10px]
+                  "
+                  style={{
+                    fontFamily: "var(--font-inter)",
+                  }}
+                >
+                  {fmtTime(currentTime)}
+                </span>
+
+                <span
+                  className="
+                    text-[9px]
+                    tabular-nums
+                    tracking-wide
+                    text-white/55
+                    sm:text-[10px]
+                  "
+                  style={{
+                    fontFamily: "var(--font-inter)",
+                  }}
+                >
+                  {duration > 0
+                    ? fmtTime(duration)
+                    : currentSong.durationLabel ?? "0:00"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* =================================================
+              CONTROLS
+          ================================================== */}
+
+          <div
+            className="
+              flex
+              shrink-0
+              items-center
+              justify-center
+              px-1
+              sm:px-2
+            "
+          >
+            <PlayerControls
+              isPlaying={isPlaying}
+              onPlay={handlePlay}
+              onPause={handlePause}
+              onPrev={handlePrev}
+              onNext={handleNext}
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      <style >{`
+        @keyframes ghazal-artwork-spin {
+          from {
+            transform: rotate(0deg);
+          }
+
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </>
   );
 }
