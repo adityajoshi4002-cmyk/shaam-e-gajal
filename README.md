@@ -29,7 +29,7 @@ https://shaam-e-gajal.vercel.app/
 
 https://github.com/adityajoshi4002-cmyk/shaam-e-gajal
 
-### 👨‍💻 Creator
+###  Creator
 
 **Aditya Joshi**  
 https://adidev-six.vercel.app/
